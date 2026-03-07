@@ -1,0 +1,1346 @@
+/* ============================================
+   GETA LABO — 和モダン ブランドサイト
+   ============================================ */
+
+/* ---------- リセット & 基本設定 ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "メイリオ", sans-serif;
+  color: #1a1a1a;
+  background-color: #FAF8F5;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23w)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.7;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+/* ---------- フェードインアニメーション ---------- */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   ヘッダー
+   ============================================ */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.header.is-scrolled {
+  background-color: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06);
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: opacity 0.3s ease;
+}
+
+.logo-main {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: #fff;
+  transition: color 0.4s ease;
+}
+
+.header.is-scrolled .logo-main {
+  color: #1a1a1a;
+}
+
+.logo-sub {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.4s ease;
+}
+
+.header.is-scrolled .logo-sub {
+  color: #999;
+}
+
+/* ハンバーガーメニュー */
+.hamburger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1001;
+  padding: 0;
+}
+
+.hamburger-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 28px;
+  height: 20px;
+  position: relative;
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.header.is-scrolled .hamburger-line {
+  background-color: #1a1a1a;
+}
+
+.hamburger-line:nth-child(1) { top: 0; }
+.hamburger-line:nth-child(2) { top: 50%; transform: translateY(-50%); }
+.hamburger-line:nth-child(3) { bottom: 0; }
+
+.hamburger.is-active .hamburger-line {
+  background-color: #fff;
+}
+
+.hamburger.is-active .hamburger-line:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.hamburger.is-active .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.hamburger.is-active .hamburger-line:nth-child(3) {
+  bottom: 50%;
+  transform: translateY(50%) rotate(-45deg);
+}
+
+.hamburger-label {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: #fff;
+  transition: color 0.4s ease, opacity 0.3s ease;
+  text-transform: uppercase;
+}
+
+.header.is-scrolled .hamburger-label {
+  color: #1a1a1a;
+}
+
+.hamburger.is-active .hamburger-label {
+  color: #fff;
+}
+
+/* ナビゲーションオーバーレイ */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background-color: rgba(10, 10, 10, 0.97);
+  clip-path: circle(0% at calc(100% - 56px) 32px);
+  transition: clip-path 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  visibility: hidden;
+  z-index: 999;
+}
+
+.nav-overlay.is-open {
+  clip-path: circle(150% at calc(100% - 56px) 32px);
+  visibility: visible;
+}
+
+.nav-overlay-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 100px 8% 60px;
+  gap: 60px;
+}
+
+.nav-main {
+  flex: 1;
+}
+
+.nav-list {
+  text-align: left;
+}
+
+.nav-list li {
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transform: translateY(30px);
+  opacity: 0;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+              opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-list li:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-overlay.is-open .nav-list li {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.nav-overlay.is-open .nav-list li:nth-child(1) { transition-delay: 0.3s; }
+.nav-overlay.is-open .nav-list li:nth-child(2) { transition-delay: 0.37s; }
+.nav-overlay.is-open .nav-list li:nth-child(3) { transition-delay: 0.44s; }
+.nav-overlay.is-open .nav-list li:nth-child(4) { transition-delay: 0.51s; }
+.nav-overlay.is-open .nav-list li:nth-child(5) { transition-delay: 0.58s; }
+.nav-overlay.is-open .nav-list li:nth-child(6) { transition-delay: 0.65s; }
+.nav-overlay.is-open .nav-list li:nth-child(7) { transition-delay: 0.72s; }
+.nav-overlay.is-open .nav-list li:nth-child(8) { transition-delay: 0.79s; }
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.2rem 0;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s ease;
+}
+
+.nav-link:hover {
+  opacity: 1;
+  color: #B8860B;
+}
+
+.nav-num {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: #B8860B;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  min-width: 24px;
+}
+
+.nav-link:hover .nav-num {
+  transform: translateX(4px);
+}
+
+.nav-text {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.nav-text::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: #B8860B;
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.nav-link:hover .nav-text::after {
+  width: 100%;
+}
+
+/* ナビオーバーレイ — 右カラム */
+.nav-side {
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3rem;
+  padding-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s;
+}
+
+.nav-overlay.is-open .nav-side {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-side-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.nav-side-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.nav-side-links a {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.nav-side-links a:hover {
+  color: #B8860B;
+  opacity: 1;
+}
+
+.nav-side-company {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.3rem;
+}
+
+.nav-side-address {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.25);
+  line-height: 1.6;
+}
+
+/* ============================================
+   ヒーローセクション
+   ============================================ */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-video-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 動画が読み込めない場合のフォールバック背景 */
+.hero-video-wrap {
+  background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 30%, #3d2b1f 60%, #2c2c2c 100%);
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+}
+
+.hero-catch-en {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeIn 1s ease 0.5s forwards;
+}
+
+.hero-catch {
+  font-family: "Noto Serif JP", serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  line-height: 1.6;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: heroFadeIn 1s ease 0.8s forwards;
+}
+
+@keyframes heroFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* スクロール促進 */
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+  opacity: 0;
+  animation: heroFadeIn 1s ease 1.5s forwards;
+}
+
+.hero-scroll-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.7), transparent);
+  animation: scrollLine 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ============================================
+   共通セクションスタイル
+   ============================================ */
+.section {
+  padding: 120px 0;
+}
+
+.section-label {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.section-label-en {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  color: #B8860B;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  font-family: "Noto Serif JP", serif;
+  font-size: 2rem;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 0.1em;
+  margin-bottom: 3.5rem;
+  line-height: 1.6;
+}
+
+/* ============================================
+   コンセプトセクション
+   ============================================ */
+.concept {
+  background-color: #F5F0EB;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.concept-heading {
+  font-family: "Noto Serif JP", serif;
+  font-size: 2.4rem;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 0.15em;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+}
+
+.concept-body {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+  font-size: 0.95rem;
+  line-height: 2.2;
+  color: #555;
+}
+
+.concept-body p + p {
+  margin-top: 2rem;
+}
+
+/* ============================================
+   プロダクトセクション
+   ============================================ */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.product-card {
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.product-card-image {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+
+.product-card-body {
+  padding: 1.5rem;
+}
+
+.product-card-title {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.3rem;
+}
+
+.product-card-title-ja {
+  font-size: 0.75rem;
+  color: #999;
+  margin-bottom: 0.8rem;
+}
+
+.product-card-desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ============================================
+   ストーリーセクション
+   ============================================ */
+.story {
+  background-color: #F5F0EB;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.story-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-bottom: 80px;
+}
+
+.story-block:last-child {
+  margin-bottom: 0;
+}
+
+.story-block-reverse {
+  direction: rtl;
+}
+
+.story-block-reverse > * {
+  direction: ltr;
+}
+
+.story-image {
+  aspect-ratio: 4 / 3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.story-title {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.08em;
+}
+
+.story-text p {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 2;
+}
+
+/* ============================================
+   コラボレーションセクション
+   ============================================ */
+.collaboration .container {
+  text-align: center;
+}
+
+.collab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 30px;
+  row-gap: 50px;
+  justify-items: center;
+}
+
+.collab-item {
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.collab-item:hover {
+  transform: translateY(-4px);
+}
+
+.collab-item .placeholder-image {
+  aspect-ratio: 3 / 2;
+  border-radius: 4px;
+  margin-bottom: 1.2rem;
+}
+
+.collab-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   ニュースセクション
+   ============================================ */
+.news {
+  background-color: #F5F0EB;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.news-list {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.news-item {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.news-item:hover {
+  opacity: 0.6;
+}
+
+.news-item:first-child {
+  border-top: 1px solid rgba(26, 26, 26, 0.1);
+}
+
+.news-date {
+  font-size: 0.8rem;
+  color: #999;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.news-tag {
+  font-size: 0.7rem;
+  color: #B8860B;
+  border: 1px solid #B8860B;
+  padding: 2px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+.news-title {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ============================================
+   ショップセクション
+   ============================================ */
+.shop-lead {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 2.5rem;
+}
+
+.shop-links {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.shop-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  border: 1px solid rgba(26, 26, 26, 0.15);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.shop-btn:hover {
+  opacity: 1;
+  border-color: #B8860B;
+  background-color: rgba(184, 134, 11, 0.04);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.shop-btn-name {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+
+.shop-btn-sub {
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   フッター
+   ============================================ */
+.footer {
+  background-color: #1a1a1a;
+  color: #fff;
+  padding-top: 80px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 60px;
+}
+
+.footer-logo {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.footer-company {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.footer-address {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.8;
+}
+
+.footer-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.footer-nav a {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+  transition: color 0.3s ease;
+}
+
+.footer-nav a:hover {
+  color: #B8860B;
+  opacity: 1;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.footer-links a {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.footer-links-heading {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+}
+
+.footer-links a:hover {
+  color: #B8860B;
+  opacity: 1;
+}
+
+.footer-policy {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 40px;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-policy a {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.footer-policy a:hover {
+  color: #B8860B;
+  opacity: 1;
+}
+
+.footer-policy-divider {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0 0.8rem;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 40px;
+  text-align: center;
+}
+
+.footer-bottom p {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   ミッションセクション
+   ============================================ */
+.mission {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.mission .section-label-en {
+  color: #B8860B;
+}
+
+.mission .concept-heading {
+  color: #fff;
+}
+
+.mission-vision {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(184, 134, 11, 0.3);
+  border-radius: 4px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3rem;
+}
+
+.mission-vision-text {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 2.2;
+  color: #B8860B;
+}
+
+.mission .concept-body {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ============================================
+   つながる世界セクション
+   ============================================ */
+.connected-world {
+  background-color: #F5F0EB;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+.world-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.world-card {
+  background: #fff;
+  border-radius: 4px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.world-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+.world-card-icon {
+  margin-bottom: 1.2rem;
+}
+
+.world-card-num {
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: #B8860B;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  line-height: 38px;
+  border: 1px solid #B8860B;
+  border-radius: 50%;
+}
+
+.world-card-title {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.8rem;
+}
+
+.world-card-desc {
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ============================================
+   コラボレーション リード文
+   ============================================ */
+.collab-lead {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 2.2;
+  margin-bottom: 3rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================
+   認定制度セクション
+   ============================================ */
+.certification-content {
+  text-align: center;
+}
+
+.certification-lead {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 2.5rem;
+  line-height: 2;
+}
+
+.certification-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.certification-card {
+  background: #fff;
+  border-radius: 4px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.certification-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.certification-card-title {
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.certification-card-desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.8;
+}
+
+/* ============================================
+   フッター提携機関
+   ============================================ */
+.footer-partner {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.4rem;
+}
+
+/* ============================================
+   プレースホルダー画像（仮画像）
+   ============================================ */
+.placeholder-image {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+}
+
+.placeholder-1 {
+  background: linear-gradient(145deg, #d4c5b0, #a89279, #8b7355);
+}
+
+.placeholder-2 {
+  background: linear-gradient(145deg, #2c3e50, #34495e, #1a252f);
+}
+
+.placeholder-3 {
+  background: linear-gradient(145deg, #c0392b, #96281b, #7b241c);
+  opacity: 0.85;
+}
+
+.placeholder-story-1 {
+  background: linear-gradient(135deg, #8b7355, #a89279, #c4b393);
+}
+
+.placeholder-story-2 {
+  background: linear-gradient(135deg, #2c3e50, #3d5a73, #4a7c9b);
+}
+
+.placeholder-story-3 {
+  background: linear-gradient(135deg, #5d4037, #795548, #a1887f);
+}
+
+.placeholder-collab {
+  background: linear-gradient(135deg, #e8e0d5, #d5c9b8, #c4b8a5);
+}
+
+/* ============================================
+   レスポンシブ — タブレット（768px以下）
+   ============================================ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 24px;
+  }
+
+  .section {
+    padding: 80px 0;
+  }
+
+  .header-inner {
+    padding: 16px 24px;
+  }
+
+  .logo-main {
+    font-size: 1.2rem;
+  }
+
+  /* ヒーロー */
+  .hero-catch {
+    font-size: 2rem;
+  }
+
+  .hero-catch-en {
+    font-size: 0.75rem;
+  }
+
+  /* コンセプト */
+  .concept-heading {
+    font-size: 1.8rem;
+  }
+
+  .concept-body {
+    font-size: 0.85rem;
+  }
+
+  .concept-body br {
+    display: none;
+  }
+
+  /* プロダクト */
+  .section-heading {
+    font-size: 1.6rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* ストーリー */
+  .story-block {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .story-block-reverse {
+    direction: ltr;
+  }
+
+  .story-title {
+    font-size: 1.2rem;
+  }
+
+  /* コラボ */
+  .collab-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .collab-lead br {
+    display: none;
+  }
+
+  /* つながる世界 */
+  .world-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* 認定制度 */
+  .certification-cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  /* ミッション */
+  .mission .concept-body br {
+    display: none;
+  }
+
+  .mission-vision {
+    padding: 2rem 1.5rem;
+  }
+
+  .mission-vision-text {
+    font-size: 1rem;
+  }
+
+  /* ナビオーバーレイ */
+  .nav-overlay-inner {
+    flex-direction: column;
+    padding: 100px 32px 40px;
+    gap: 40px;
+    justify-content: center;
+  }
+
+  .nav-side {
+    width: 100%;
+    flex-direction: row;
+    gap: 2rem;
+    padding-bottom: 0;
+  }
+
+  .nav-text {
+    font-size: 1.3rem;
+  }
+
+  .nav-list li {
+    margin-bottom: 0;
+  }
+
+  .nav-link {
+    padding: 1rem 0;
+  }
+
+  /* ニュース */
+  .news-item {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1.2rem 0;
+  }
+
+  .news-title {
+    width: 100%;
+    font-size: 0.85rem;
+  }
+
+  /* ショップ */
+  .shop-links {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  /* フッター */
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 0 24px 40px;
+  }
+}
+
+/* ============================================
+   レスポンシブ — スマホ（480px以下）
+   ============================================ */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .section {
+    padding: 60px 0;
+  }
+
+  .hero-catch {
+    font-size: 1.6rem;
+  }
+
+  .concept-heading {
+    font-size: 1.5rem;
+  }
+
+  .section-heading {
+    font-size: 1.3rem;
+  }
+
+  .nav-text {
+    font-size: 1.1rem;
+  }
+
+  .nav-overlay-inner {
+    padding: 90px 24px 30px;
+  }
+
+  .nav-side {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .nav-link {
+    padding: 0.8rem 0;
+    gap: 1rem;
+  }
+
+  .collab-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .world-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .world-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .shop-links {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-btn {
+    padding: 1.5rem 1rem;
+  }
+}
