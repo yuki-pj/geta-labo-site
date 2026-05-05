@@ -561,6 +561,9 @@ ul {
   border-radius: 4px;
   overflow: hidden;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .product-card:hover {
@@ -573,8 +576,16 @@ ul {
   overflow: hidden;
 }
 
+.product-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .product-card-body {
   padding: 1.5rem;
+  flex: 1;
 }
 
 .product-card-title {
@@ -717,6 +728,8 @@ ul {
   overflow: hidden;
   transition: opacity 0.3s ease;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .news-item:hover {
@@ -1030,7 +1043,10 @@ ul {
    ミッションセクション
    ============================================ */
 .mission {
-  background-color: #1a1a1a;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/geta.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: #fff;
 }
 
@@ -1043,15 +1059,8 @@ ul {
 }
 
 .mission-vision {
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 2.5rem 2rem;
-  border: 1px solid rgba(184, 134, 11, 0.3);
-  border-radius: 4px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 3rem;
+  padding: 0 2rem;
+  border-left: 1px solid rgba(184, 134, 11, 0.6);
 }
 
 .mission-vision-text {
@@ -1065,6 +1074,21 @@ ul {
 
 .mission .concept-body {
   color: rgba(255, 255, 255, 0.7);
+  font-family: "Noto Serif JP", serif;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  line-height: 3.5;
+  text-align: start;
+}
+
+.mission .concept-body p + p {
+  margin-top: 0;
+  margin-right: 2rem;
+}
+
+.mission .section-layout-right {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 /* ============================================
@@ -1268,6 +1292,179 @@ ul {
 
 .placeholder-collab {
   background: linear-gradient(135deg, #e8e0d5, #d5c9b8, #c4b8a5);
+}
+
+/* ============================================
+   2カラム セクションレイアウト
+   ============================================ */
+.section-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.section-layout-left {
+}
+
+.section-layout-left .section-label {
+  text-align: left;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+
+.section-layout-left .section-label::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 24px;
+  height: 1px;
+  background-color: #B8860B;
+}
+
+.section-layout-left .section-heading {
+  text-align: left;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-layout-left .concept-heading {
+  text-align: left;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ショップ: 左カラム */
+.section-layout-left .shop-lead {
+  text-align: left;
+  margin-bottom: 0;
+}
+
+/* ショップ: コンテナ幅リセット・右カラムグリッド */
+.shop .container {
+  max-width: 1100px;
+  padding: 0 40px;
+}
+
+.shop .section-layout-right .shop-card-list {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ニュース: 右カラムで2列 */
+.news .section-layout-right .news-list {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* ミッション: 右カラムのオーバーライド（縦書きのため不要なtext-alignは削除） */
+.mission .section-layout-right .mission-vision {
+  margin: 0;
+  max-width: 100%;
+}
+
+.mission .section-layout-right .concept-body {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* Connected World: 左カラムをスクロール追従 */
+.connected-world .section-layout-left {
+  position: sticky;
+  top: 80px;
+}
+
+/* Connected World: 右カラムで2列 */
+.connected-world .section-layout-right .world-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* 認定制度: 左カラムのリード文 */
+.section-layout-left .certification-lead {
+  text-align: left;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  margin-bottom: 0;
+}
+
+/* 認定制度: 右カラムのカードを縦並び */
+.certification .section-layout-right .certification-cards {
+  max-width: 100%;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+/* 研究・開発: 右カラム内のストーリーブロック間隔 */
+.story .section-layout-right .story-block {
+  gap: 40px;
+}
+
+/* ============================================
+   レスポンシブ — 2カラム → 1カラム（900px以下）
+   ============================================ */
+@media (max-width: 900px) {
+  .section-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .section-layout-left {
+    position: static;
+  }
+
+  .section-layout-left .section-label {
+    text-align: center;
+  }
+
+  .section-layout-left .section-label::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .section-layout-left .section-heading,
+  .section-layout-left .concept-heading {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .shop .container {
+    padding: 0 24px;
+  }
+
+  .news .section-layout-right .news-list {
+    grid-template-columns: 1fr;
+  }
+
+  .connected-world .section-layout-right .world-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .certification .section-layout-right .certification-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .mission .section-layout-right {
+    writing-mode: horizontal-tb;
+  }
+
+  .mission .section-layout-right .concept-body,
+  .mission .section-layout-right .mission-vision {
+    text-align: center;
+  }
+
+  .mission .section-layout-right .mission-vision {
+    padding: 1.5rem 2rem;
+    border-left: none;
+    border-top: 1px solid rgba(184, 134, 11, 0.6);
+    border-bottom: 1px solid rgba(184, 134, 11, 0.6);
+    margin-bottom: 2rem;
+  }
+
+  .mission .section-layout-right .mission-vision-text {
+    text-align: center;
+  }
 }
 
 /* ============================================
