@@ -1,0 +1,36 @@
+# ================================================
+# GETA LABO — セキュリティ設定
+# ================================================
+
+# --- HTTPS 強制リダイレクト ---
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# --- セキュリティヘッダー ---
+<IfModule mod_headers.c>
+    # クリックジャッキング防止
+    Header always set X-Frame-Options "DENY"
+
+    # コンテンツタイプ偽装防止
+    Header always set X-Content-Type-Options "nosniff"
+
+    # リファラー情報の制御
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # 不要なブラウザ機能の無効化
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # HTTPS 強制（HSTS）— 1年間
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+    # コンテンツセキュリティポリシー（CSP）
+    # 許可: 自サイト / Google Fonts のスタイル・フォントのみ
+    Header always set Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+</IfModule>
+
+# --- 機密ファイルへのアクセス遮断 ---
+# ドットファイル全般（.env, .git, .gitignore 等）を外部からアクセス不可にする
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

@@ -8,7 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
   var header = document.getElementById("header");
 
   function updateHeader() {
-    if (window.scrollY > 60) {
+    var concept = document.getElementById("concept");
+    var pastConcept = concept ? concept.getBoundingClientRect().bottom <= 0 : window.scrollY > 60;
+    if (pastConcept) {
       header.classList.add("is-scrolled");
     } else {
       header.classList.remove("is-scrolled");
@@ -67,6 +69,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   fadeElements.forEach(function (el) {
     fadeObserver.observe(el);
+  });
+
+  /* ---------- ニュースフィルタータブ ---------- */
+  var newsTabs = document.querySelectorAll(".news-tab");
+  var newsItems = document.querySelectorAll(".news-item");
+
+  newsTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      var filter = this.getAttribute("data-filter");
+
+      newsTabs.forEach(function (t) { t.classList.remove("is-active"); });
+      this.classList.add("is-active");
+
+      newsItems.forEach(function (item) {
+        if (filter === "all" || item.getAttribute("data-category") === filter) {
+          item.classList.remove("is-hidden");
+        } else {
+          item.classList.add("is-hidden");
+        }
+      });
+    });
   });
 
   /* ---------- スムーススクロール ---------- */
