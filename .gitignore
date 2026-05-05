@@ -1,0 +1,13 @@
+# macOSの自動生成ファイル
+.DS_Store
+
+# 秘密情報ファイル
+.env
+.env.*
+
+# エディタの設定ファイル
+.vscode/
+.idea/
+
+# サムネイルキャッシュ
+Thumbs.db

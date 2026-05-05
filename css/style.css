@@ -99,28 +99,14 @@ ul {
   transition: opacity 0.3s ease;
 }
 
-.logo-main {
-  font-family: "Noto Serif JP", serif;
-  font-size: 1.4rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  color: #fff;
-  transition: color 0.4s ease;
+.header-logo-img {
+  height: 36px;
+  width: auto;
+  transition: filter 0.4s ease;
 }
 
-.header.is-scrolled .logo-main {
-  color: #1a1a1a;
-}
-
-.logo-sub {
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
-  transition: color 0.4s ease;
-}
-
-.header.is-scrolled .logo-sub {
-  color: #999;
+.header.is-scrolled .header-logo-img {
+  filter: invert(1);
 }
 
 /* ハンバーガーメニュー */
@@ -535,13 +521,31 @@ ul {
   margin-bottom: 3rem;
 }
 
+.concept-subtitle {
+  text-align: center;
+  font-family: "Noto Serif JP", serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #3a3228;
+  margin-bottom: 0.5rem;
+}
+
+.concept-label {
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  color: #8a7a6a;
+  margin-bottom: 2rem;
+}
+
 .concept-body {
   text-align: center;
   max-width: 700px;
   margin: 0 auto;
-  font-size: 0.95rem;
-  line-height: 2.2;
-  color: #555;
+  font-size: 1.1rem;
+  line-height: 2.4;
+  color: #333;
 }
 
 .concept-body p + p {
@@ -968,7 +972,8 @@ ul {
 .world-card {
   background: #fff;
   border-radius: 4px;
-  padding: 2rem 1.5rem;
+  overflow: hidden;
+  padding-bottom: 1.5rem;
   text-align: center;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
@@ -978,8 +983,24 @@ ul {
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
 }
 
-.world-card-icon {
+.world-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
   margin-bottom: 1.2rem;
+}
+
+.world-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.world-card:hover .world-card-img {
+  transform: scale(1.05);
 }
 
 .world-card-num {
@@ -987,13 +1008,17 @@ ul {
   font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.1em;
-  color: #B8860B;
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  line-height: 38px;
-  border: 1px solid #B8860B;
+  color: #fff;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  line-height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
   border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  text-align: center;
 }
 
 .world-card-title {
@@ -1002,12 +1027,14 @@ ul {
   font-weight: 500;
   letter-spacing: 0.08em;
   margin-bottom: 0.8rem;
+  padding: 0 1.2rem;
 }
 
 .world-card-desc {
   font-size: 0.8rem;
   color: #666;
   line-height: 1.8;
+  padding: 0 1.2rem;
 }
 
 /* ============================================
