@@ -66,6 +66,28 @@ ul {
   transform: translateY(0);
 }
 
+/* ---------- 右からスクロール連動スライドイン ---------- */
+.slide-from-right {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ---------- Products スクロール固定アニメーション ---------- */
+.products-scroll-wrapper {
+  position: relative;
+  height: 600vh;
+}
+
+.products.products-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
 /* ============================================
    ヘッダー
    ============================================ */

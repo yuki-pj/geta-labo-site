@@ -71,6 +71,39 @@ document.addEventListener("DOMContentLoaded", function () {
     fadeObserver.observe(el);
   });
 
+  /* ---------- 商品カード スクロール固定スライドイン ---------- */
+  var productsWrapper = document.querySelector('.products-scroll-wrapper');
+  var slideItems = document.querySelectorAll('.slide-from-right');
+
+  slideItems.forEach(function (item) {
+    item.style.opacity = '0';
+    item.style.transform = 'translateX(' + window.innerWidth + 'px)';
+  });
+
+  function updateProductsScroll() {
+    if (!productsWrapper || slideItems.length === 0) return;
+
+    var wRect = productsWrapper.getBoundingClientRect();
+    var maxScroll = productsWrapper.offsetHeight - window.innerHeight;
+    var scrolled = -wRect.top;
+
+    if (scrolled < 0) return;
+
+    var progress = Math.min(1, scrolled / maxScroll);
+    var total = slideItems.length;
+
+    slideItems.forEach(function (item, i) {
+      var phaseSize = 1 / total;
+      var cardProgress = Math.max(0, Math.min(1, (progress - i * phaseSize) / phaseSize));
+
+      item.style.transform = 'translateX(' + (1 - cardProgress) * window.innerWidth + 'px)';
+      item.style.opacity = String(Math.min(1, cardProgress * 2));
+    });
+  }
+
+  window.addEventListener('scroll', updateProductsScroll, { passive: true });
+  updateProductsScroll();
+
   /* ---------- ニュースフィルタータブ ---------- */
   var newsTabs = document.querySelectorAll(".news-tab");
   var newsItems = document.querySelectorAll(".news-item");
