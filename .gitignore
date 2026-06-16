@@ -11,3 +11,8 @@
 
 # サムネイルキャッシュ
 Thumbs.db
+
+# 作業用ファイル（公開しない）
+GETA LABO/
+archive/
+tasks/

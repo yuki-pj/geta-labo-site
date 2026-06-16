@@ -71,38 +71,91 @@ document.addEventListener("DOMContentLoaded", function () {
     fadeObserver.observe(el);
   });
 
-  /* ---------- 商品カード スクロール固定スライドイン ---------- */
-  var productsWrapper = document.querySelector('.products-scroll-wrapper');
-  var slideItems = document.querySelectorAll('.slide-from-right');
-
-  slideItems.forEach(function (item) {
-    item.style.opacity = '0';
-    item.style.transform = 'translateX(' + window.innerWidth + 'px)';
+  /* ---------- 商品カード 上品な浮上フェード ---------- */
+  var productReveals = document.querySelectorAll('.product-reveal');
+  productReveals.forEach(function (el) {
+    fadeObserver.observe(el);
   });
 
-  function updateProductsScroll() {
-    if (!productsWrapper || slideItems.length === 0) return;
+  /* ---------- 伝統文化を紡ぐ: ピン留め＋文字リベール ---------- */
+  var missionReveal = document.querySelector(".mission-reveal");
+  var pinWrap = document.querySelector(".mission-pin-wrap");
+  var canPin = window.matchMedia("(min-width: 901px)").matches &&
+               !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    var wRect = productsWrapper.getBoundingClientRect();
-    var maxScroll = productsWrapper.offsetHeight - window.innerHeight;
-    var scrolled = -wRect.top;
+  if (missionReveal && pinWrap && canPin) {
+    // 右カラムの文字を1文字ずつ <span> で包む（改行・空白はそのまま維持）
+    var revealChars = [];
+    (function wrapChars(node) {
+      var children = Array.prototype.slice.call(node.childNodes);
+      children.forEach(function (child) {
+        if (child.nodeType === 3) {
+          // テキストノード
+          var text = child.textContent;
+          var frag = document.createDocumentFragment();
+          for (var i = 0; i < text.length; i++) {
+            var ch = text[i];
+            if (ch.trim() === "") {
+              frag.appendChild(document.createTextNode(ch));
+            } else {
+              var span = document.createElement("span");
+              span.className = "reveal-char";
+              span.textContent = ch;
+              frag.appendChild(span);
+              revealChars.push(span);
+            }
+          }
+          node.replaceChild(frag, child);
+        } else if (child.nodeType === 1 && child.tagName !== "BR") {
+          wrapChars(child);
+        }
+      });
+    })(missionReveal);
 
-    if (scrolled < 0) return;
+    // ピン演出が有効なことを示す（CSSで金色の縦棒を初期非表示にする）
+    missionReveal.classList.add("reveal-active");
 
-    var progress = Math.min(1, scrolled / maxScroll);
-    var total = slideItems.length;
+    var totalChars = revealChars.length;
+    var lastShown = -1;
 
-    slideItems.forEach(function (item, i) {
-      var phaseSize = 1 / total;
-      var cardProgress = Math.max(0, Math.min(1, (progress - i * phaseSize) / phaseSize));
+    function updateMissionReveal() {
+      var rect = pinWrap.getBoundingClientRect();
+      var distance = pinWrap.offsetHeight - window.innerHeight;
+      var progress = distance > 0 ? -rect.top / distance : 0;
+      progress = Math.max(0, Math.min(1, progress));
 
-      item.style.transform = 'translateX(' + (1 - cardProgress) * window.innerWidth + 'px)';
-      item.style.opacity = String(Math.min(1, cardProgress * 2));
-    });
+      // ピン留め区間の 5%〜80% を使って全文を出し切る
+      var start = 0.05;
+      var end = 0.8;
+      var p = (progress - start) / (end - start);
+      p = Math.max(0, Math.min(1, p));
+
+      // 金色の縦棒: スクロールが始まったら表示
+      if (p > 0) {
+        missionReveal.classList.add("bar-shown");
+      } else {
+        missionReveal.classList.remove("bar-shown");
+      }
+
+      var target = Math.round(p * totalChars);
+      if (target === lastShown) return;
+
+      if (target > lastShown) {
+        for (var i = Math.max(lastShown, 0); i < target; i++) {
+          revealChars[i].classList.add("is-shown");
+        }
+      } else {
+        for (var j = target; j < lastShown; j++) {
+          revealChars[j].classList.remove("is-shown");
+        }
+      }
+      lastShown = target;
+    }
+
+    window.addEventListener("scroll", updateMissionReveal, { passive: true });
+    window.addEventListener("resize", updateMissionReveal);
+    updateMissionReveal();
   }
-
-  window.addEventListener('scroll', updateProductsScroll, { passive: true });
-  updateProductsScroll();
 
   /* ---------- ニュースフィルタータブ ---------- */
   var newsTabs = document.querySelectorAll(".news-tab");
