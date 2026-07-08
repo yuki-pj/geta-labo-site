@@ -16,3 +16,9 @@ Thumbs.db
 GETA LABO/
 archive/
 tasks/
+.playwright-mcp/
+movie/
+
+# 作業用バックアップ・スクリーンショット（公開しない）
+*.bak
+*.bak-*

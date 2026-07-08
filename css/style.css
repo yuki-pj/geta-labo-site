@@ -110,9 +110,27 @@ ul {
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
+/* ヘッダー上部に敷くごく薄いグラデーション（白文字の視認性確保・トップ時のみ） */
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0) 100%);
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity 0.4s ease;
+}
+
 .header.is-scrolled {
   background-color: rgba(255, 255, 255, 0.97);
   box-shadow: 0 1px 20px rgba(0, 0, 0, 0.06);
+}
+
+.header.is-scrolled::before {
+  opacity: 0;
 }
 
 .header-inner {
@@ -139,6 +157,62 @@ ul {
 
 .header.is-scrolled .header-logo-img {
   filter: invert(1);
+}
+
+/* グローバルナビ（PC常時表示） */
+.global-nav {
+  margin-left: auto;
+  margin-right: 32px;
+}
+
+.global-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.global-nav-link {
+  position: relative;
+  display: inline-block;
+  font-family: "Noto Serif JP", serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: #fff;
+  padding: 4px 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+
+.global-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background-color: #B8860B;
+  transition: width 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.global-nav-link:hover {
+  color: #B8860B;
+}
+
+.global-nav-link:hover::after {
+  width: 100%;
+}
+
+.header.is-scrolled .global-nav-link {
+  color: #1a1a1a;
+  text-shadow: none;
+}
+
+.header.is-scrolled .global-nav-link:hover {
+  color: #B8860B;
 }
 
 /* ハンバーガーメニュー */
@@ -211,6 +285,13 @@ ul {
 
 .header.is-scrolled .hamburger-label {
   color: #1a1a1a;
+}
+
+/* PC（901px以上）ではハンバーガーを隠し、グローバルナビだけ表示 */
+@media (min-width: 901px) {
+  .hamburger {
+    display: none;
+  }
 }
 
 .hamburger.is-active .hamburger-label {
@@ -440,7 +521,7 @@ ul {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0);
 }
 
 .hero-content {
@@ -710,6 +791,34 @@ ul {
   gap: 60px;
   align-items: center;
   margin-bottom: 80px;
+}
+
+/* 研究と開発ブロックはリンク化。文字は本文の見た目を保ち、
+   クリックできることが伝わる控えめなホバーだけを足す */
+a.story-block {
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.4s ease;
+}
+
+a.story-block:hover {
+  transform: translateY(-4px);
+}
+
+a.story-block:hover .story-image-photo {
+  box-shadow: 0 12px 28px rgba(60, 50, 40, 0.16);
+}
+
+a.story-block:hover .story-title {
+  color: #8b7355;
+}
+
+.story-title {
+  transition: color 0.3s ease;
+}
+
+.story-image-photo {
+  transition: box-shadow 0.4s ease;
 }
 
 .story-block:last-child {
@@ -1059,7 +1168,7 @@ ul {
 
 .shop-card-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
 }
 
@@ -1385,6 +1494,9 @@ ul {
 }
 
 .world-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
   background: #fff;
   border-radius: 4px;
   overflow: hidden;
@@ -1472,22 +1584,18 @@ ul {
 /* ============================================
    認定制度セクション
    ============================================ */
-.certification {
+.contact-section {
   background-color: #fff;
 }
 
-.certification-content {
-  text-align: center;
-}
-
-.certification-lead {
+.contact-lead {
   font-size: 0.95rem;
   color: #555;
   margin-bottom: 2.5rem;
   line-height: 2;
 }
 
-.certification-cards {
+.contact-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 30px;
@@ -1495,32 +1603,78 @@ ul {
   margin: 0 auto;
 }
 
-.certification-card {
-  background: #fff;
-  border-radius: 4px;
-  padding: 2.5rem 2rem;
-  text-align: center;
-  border: 1px solid rgba(26, 26, 26, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* カードは写真＋白背景の横並びレイアウトで、そのままフォームへのリンクにする */
+.contact-card {
+  display: flex;
+  align-items: stretch;
+  background-color: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: left;
+  border: 1px solid #e0d8cc;
+  color: #333;
+  text-decoration: none;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.certification-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+.contact-card:hover {
+  border-color: #8b7355;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(139, 115, 85, 0.22);
+  opacity: 1;
 }
 
-.certification-card-title {
+.contact-card-photo {
+  flex: 0 0 180px;
+  min-height: 110px;
+  overflow: hidden;
+}
+
+.contact-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.contact-card:hover .contact-card-photo img {
+  transform: scale(1.06);
+}
+
+.contact-card-body {
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.contact-card-title {
   font-family: "Noto Serif JP", serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: 0.05em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.35rem;
+  color: #2c2c2c;
 }
 
-.certification-card-desc {
-  font-size: 0.85rem;
+.contact-card-title::after {
+  content: "→";
+  margin-left: 0.5em;
+  color: #8b7355;
+  font-family: sans-serif;
+  transition: margin-left 0.3s ease;
+}
+
+.contact-card:hover .contact-card-title::after {
+  margin-left: 0.8em;
+}
+
+.contact-card-desc {
+  font-size: 0.8rem;
   color: #666;
-  line-height: 1.8;
+  line-height: 1.6;
   text-wrap: pretty;
 }
 
@@ -1659,12 +1813,18 @@ ul {
 
 /* ショップ: コンテナ幅リセット・右カラムグリッド */
 .shop .container {
-  max-width: 1100px;
+  max-width: 1200px;
   padding: 0 40px;
 }
 
+/* ショップ: 左見出しと右カードを縦中央で釣り合わせる */
+.shop .section-layout {
+  align-items: center;
+}
+
 .shop .section-layout-right .shop-card-list {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 /* ニュース: 右カラムで2列 */
@@ -1695,19 +1855,19 @@ ul {
   grid-template-columns: repeat(2, 1fr);
 }
 
-/* 認定制度: 左カラムのリード文 */
-.section-layout-left .certification-lead {
+/* 各種お問い合わせ: 左カラムのリード文 */
+.section-layout-left .contact-lead {
   text-align: left;
   font-size: 0.85rem;
   line-height: 1.9;
   margin-bottom: 0;
 }
 
-/* 認定制度: 右カラムのカードを縦並び */
-.certification .section-layout-right .certification-cards {
+/* お問い合わせ: 右カラムのカードは縦1列でスッキリ並べる */
+.contact-section .section-layout-right .contact-cards {
   max-width: 100%;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 12px;
 }
 
 /* 研究・開発: 右カラム内のストーリーブロック間隔 */
@@ -1719,6 +1879,11 @@ ul {
    レスポンシブ — 2カラム → 1カラム（900px以下）
    ============================================ */
 @media (max-width: 900px) {
+  /* スマホ・タブレットではグローバルナビを隠し、ハンバーガーを使う */
+  .global-nav {
+    display: none;
+  }
+
   .section-layout {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -1756,7 +1921,7 @@ ul {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .certification .section-layout-right .certification-cards {
+  .contact-section .section-layout-right .contact-cards {
     grid-template-columns: 1fr;
   }
 
@@ -1885,10 +2050,19 @@ ul {
     gap: 16px;
   }
 
-  /* 認定制度 */
-  .certification-cards {
+  /* 各種お問い合わせ */
+  .contact-cards {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+
+  .contact-card-photo {
+    flex-basis: 110px;
+    min-height: 96px;
+  }
+
+  .contact-card-body {
+    padding: 0.9rem 1.1rem;
   }
 
   /* ミッション */
@@ -2070,5 +2244,87 @@ ul {
     right: 12px;
     bottom: 12px;
     width: 150px;
+  }
+}
+
+/* ---------- 下駄マーキー（横スクロール） ---------- */
+.geta-marquee {
+  position: relative;
+  overflow: hidden;
+  width: 100vw;
+  max-width: 100%;
+  padding: 36px 0;
+  background-color: #F5F0EB;
+}
+
+/* 左右の端で下駄だけをふわっと消す（背景は残す） */
+.geta-marquee::before,
+.geta-marquee::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.geta-marquee::before {
+  left: 0;
+  background: linear-gradient(to right, #F5F0EB 0%, rgba(245, 240, 235, 0) 100%);
+}
+
+.geta-marquee::after {
+  right: 0;
+  background: linear-gradient(to left, #F5F0EB 0%, rgba(245, 240, 235, 0) 100%);
+}
+
+.geta-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: getaScroll 45s linear infinite;
+}
+
+.geta-marquee:hover .geta-marquee-track {
+  animation-play-state: paused;
+}
+
+.geta-marquee-group {
+  display: flex;
+  align-items: center;
+}
+
+.geta-marquee-item {
+  flex: 0 0 auto;
+  height: 200px;
+  width: auto;
+  margin: 0 8px;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+@keyframes getaScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .geta-marquee {
+    padding: 28px 0;
+  }
+  .geta-marquee-item {
+    height: 130px;
+    margin: 0 4px;
+  }
+  .geta-marquee-track {
+    animation-duration: 30s;
+  }
+}
+
+/* 動きを減らす設定の人には停止して表示 */
+@media (prefers-reduced-motion: reduce) {
+  .geta-marquee-track {
+    animation: none;
   }
 }
