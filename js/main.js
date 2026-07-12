@@ -77,106 +77,130 @@ document.addEventListener("DOMContentLoaded", function () {
     fadeObserver.observe(el);
   });
 
-  /* ---------- 伝統文化を紡ぐ: ピン留め＋文字リベール ---------- */
-  var missionReveal = document.querySelector(".mission-reveal");
-  var pinWrap = document.querySelector(".mission-pin-wrap");
-  var canPin = window.matchMedia("(min-width: 901px)").matches &&
-               !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  if (missionReveal && pinWrap && canPin) {
-    // 右カラムの文字を1文字ずつ <span> で包む（改行・空白はそのまま維持）
-    var revealChars = [];
-    (function wrapChars(node) {
-      var children = Array.prototype.slice.call(node.childNodes);
-      children.forEach(function (child) {
-        if (child.nodeType === 3) {
-          // テキストノード
-          var text = child.textContent;
-          var frag = document.createDocumentFragment();
-          for (var i = 0; i < text.length; i++) {
-            var ch = text[i];
-            if (ch.trim() === "") {
-              frag.appendChild(document.createTextNode(ch));
-            } else {
-              var span = document.createElement("span");
-              span.className = "reveal-char";
-              span.textContent = ch;
-              frag.appendChild(span);
-              revealChars.push(span);
-            }
-          }
-          node.replaceChild(frag, child);
-        } else if (child.nodeType === 1 && child.tagName !== "BR") {
-          wrapChars(child);
-        }
-      });
-    })(missionReveal);
-
-    // ピン演出が有効なことを示す（CSSで金色の縦棒を初期非表示にする）
-    missionReveal.classList.add("reveal-active");
-
-    var totalChars = revealChars.length;
-    var lastShown = -1;
-
-    function updateMissionReveal() {
-      var rect = pinWrap.getBoundingClientRect();
-      var distance = pinWrap.offsetHeight - window.innerHeight;
-      var progress = distance > 0 ? -rect.top / distance : 0;
-      progress = Math.max(0, Math.min(1, progress));
-
-      // ピン留め区間の 5%〜80% を使って全文を出し切る
-      var start = 0.05;
-      var end = 0.8;
-      var p = (progress - start) / (end - start);
-      p = Math.max(0, Math.min(1, p));
-
-      // 金色の縦棒: スクロールが始まったら表示
-      if (p > 0) {
-        missionReveal.classList.add("bar-shown");
-      } else {
-        missionReveal.classList.remove("bar-shown");
-      }
-
-      var target = Math.round(p * totalChars);
-      if (target === lastShown) return;
-
-      if (target > lastShown) {
-        for (var i = Math.max(lastShown, 0); i < target; i++) {
-          revealChars[i].classList.add("is-shown");
-        }
-      } else {
-        for (var j = target; j < lastShown; j++) {
-          revealChars[j].classList.remove("is-shown");
-        }
-      }
-      lastShown = target;
-    }
-
-    window.addEventListener("scroll", updateMissionReveal, { passive: true });
-    window.addEventListener("resize", updateMissionReveal);
-    updateMissionReveal();
-  }
-
-  /* ---------- ニュースフィルタータブ ---------- */
+  /* ---------- ニュース：CMSのお知らせ一覧から自動読み込み＋フィルタータブ ----------
+     同じサーバーの /news（CMSが生成するお知らせ一覧）から最新記事を取り込む。
+     読み込みに失敗した場合は、HTMLに書いてある固定リストをそのまま表示する（保険）。 */
+  var NEWS_SOURCE = "/news";
+  var NEWS_FETCH_MAX = 12;   // 取り込む記事数（タブ切り替え用の在庫）
+  var NEWS_VISIBLE_MAX = 4;  // 一度に表示する記事数
+  var newsListEl = document.querySelector("#news .news-list");
   var newsTabs = document.querySelectorAll(".news-tab");
-  var newsItems = document.querySelectorAll(".news-item");
+
+  function applyNewsFilter(filter) {
+    if (!newsListEl) return;
+    var shown = 0;
+    newsListEl.querySelectorAll(".news-item").forEach(function (item) {
+      var match = filter === "all" || item.getAttribute("data-category") === filter;
+      if (match && shown < NEWS_VISIBLE_MAX) {
+        item.classList.remove("is-hidden");
+        shown++;
+      } else {
+        item.classList.add("is-hidden");
+      }
+    });
+
+    var empty = newsListEl.querySelector(".news-empty");
+    if (shown === 0) {
+      if (!empty) {
+        empty = document.createElement("p");
+        empty.className = "news-empty";
+        empty.style.cssText = "padding: 24px 0; color: #888; font-size: 0.9rem;";
+        empty.textContent = "該当するお知らせはまだありません。";
+        newsListEl.appendChild(empty);
+      }
+      empty.style.display = "";
+    } else if (empty) {
+      empty.style.display = "none";
+    }
+  }
 
   newsTabs.forEach(function (tab) {
     tab.addEventListener("click", function () {
-      var filter = this.getAttribute("data-filter");
-
       newsTabs.forEach(function (t) { t.classList.remove("is-active"); });
       this.classList.add("is-active");
-
-      newsItems.forEach(function (item) {
-        if (filter === "all" || item.getAttribute("data-category") === filter) {
-          item.classList.remove("is-hidden");
-        } else {
-          item.classList.add("is-hidden");
-        }
-      });
+      applyNewsFilter(this.getAttribute("data-filter"));
     });
   });
+
+  function buildNewsItem(li) {
+    var link = li.querySelector("a[href]");
+    var title = li.querySelector(".news-ttl");
+    if (!link || !title) return null; // タブ等、記事以外のliは除外
+
+    var a = document.createElement("a");
+    a.href = link.getAttribute("href");
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.className = "news-item fade-in is-visible";
+
+    var img = li.querySelector(".img-box img");
+    if (img) {
+      var thumb = document.createElement("img");
+      thumb.className = "news-thumb";
+      thumb.src = img.getAttribute("src");
+      thumb.alt = img.getAttribute("alt") || "";
+      thumb.loading = "lazy";
+      a.appendChild(thumb);
+    }
+
+    var body = document.createElement("div");
+    body.className = "news-body";
+    var meta = document.createElement("div");
+    meta.className = "news-meta";
+
+    var dateSrc = li.querySelector(".news-date");
+    var time = document.createElement("time");
+    time.className = "news-date";
+    time.textContent = dateSrc ? dateSrc.textContent.trim() : "";
+    meta.appendChild(time);
+
+    var tagSrc = li.querySelector(".news-tag");
+    var tagText = tagSrc ? tagSrc.textContent.trim() : "";
+    if (tagText) {
+      var tag = document.createElement("span");
+      tag.className = "news-tag";
+      tag.textContent = tagText;
+      meta.appendChild(tag);
+    }
+    a.setAttribute("data-category", tagText);
+
+    var titleEl = document.createElement("p");
+    titleEl.className = "news-title";
+    titleEl.textContent = title.textContent.trim();
+
+    body.appendChild(meta);
+    body.appendChild(titleEl);
+    a.appendChild(body);
+    return a;
+  }
+
+  function loadLatestNews() {
+    if (!newsListEl || !window.fetch || !window.DOMParser) return;
+
+    fetch(NEWS_SOURCE).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.text();
+    }).then(function (html) {
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      var built = [];
+      doc.querySelectorAll("ul.news-list li.item").forEach(function (li) {
+        if (built.length >= NEWS_FETCH_MAX) return;
+        var item = buildNewsItem(li);
+        if (item) built.push(item);
+      });
+      if (built.length === 0) throw new Error("no news items found");
+
+      newsListEl.innerHTML = "";
+      built.forEach(function (item) { newsListEl.appendChild(item); });
+
+      var activeTab = document.querySelector(".news-tab.is-active");
+      applyNewsFilter(activeTab ? activeTab.getAttribute("data-filter") : "all");
+    }).catch(function () {
+      // 読み込み失敗時は何もしない＝HTMLの固定リストがそのまま表示される
+    });
+  }
+
+  loadLatestNews();
 
   /* ---------- スムーススクロール ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {

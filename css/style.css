@@ -745,7 +745,7 @@ ul {
 .product-card-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -787,8 +787,10 @@ ul {
 
 .story-block {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
+  /* 文章側は最長見出し「世界のトップアスリートも」が
+     折り返さずに収まる300pxを確保し、残りを図解に使う */
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 48px;
   align-items: center;
   margin-bottom: 80px;
 }
@@ -810,7 +812,7 @@ a.story-block:hover .story-image-photo {
 }
 
 a.story-block:hover .story-title {
-  color: #8b7355;
+  color: #96690a;
 }
 
 .story-title {
@@ -844,10 +846,9 @@ a.story-block:hover .story-title {
    ベージュのセクションから浮かないようにする */
 .story-image-photo {
   aspect-ratio: auto;
-  overflow: visible;
-  padding: 16px;
+  overflow: hidden;
+  padding: 8px;
   background-color: #FFFFFF;
-  border: 1px solid rgba(60, 50, 40, 0.08);
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(60, 50, 40, 0.08);
 }
@@ -856,27 +857,29 @@ a.story-block:hover .story-title {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .story-title {
   font-family: "Noto Serif JP", serif;
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin-bottom: 1.2rem;
-  letter-spacing: 0.08em;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #B8860B;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.06em;
+  line-height: 1.5;
 }
 
 /* 見出しはできるだけ1行で。狭い画面で折り返す場合も、
    意味のかたまり（.nobr）の中では改行させず泣き別れを防ぐ */
-.story-title .nobr {
+.nobr {
   display: inline-block;
 }
 
 .story-text p {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: #555;
-  line-height: 2;
+  line-height: 1.9;
   text-wrap: pretty;
 }
 
@@ -1322,6 +1325,8 @@ a.story-block:hover .story-title {
   color: rgba(255, 255, 255, 0.45);
   letter-spacing: 0.05em;
   transition: color 0.3s ease;
+  white-space: nowrap; /* リンク名が途中で改行されないようにする */
+  display: inline-block;
 }
 
 .footer-policy a:hover {
@@ -1401,22 +1406,16 @@ a.story-block:hover .story-title {
   text-orientation: mixed;
 }
 
-/* ---------- ピン留め＋文字リベール演出 ---------- */
+/* ---------- 伝統文化を紡ぐ: 常に全文表示 ---------- */
 .mission {
   padding: 0;
 }
 
 .mission-pin-wrap {
-  position: relative;
-  height: 500vh; /* スクロール量。大きいほど文字がゆっくり現れる */
+  height: auto;
 }
 
 .mission-sticky {
-  position: sticky;
-  top: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
   padding-top: 120px;
   padding-bottom: 120px;
 }
@@ -1425,56 +1424,9 @@ a.story-block:hover .story-title {
   width: 100%;
 }
 
-/* 右カラムの文字は初期状態では非表示 */
-.mission-reveal .reveal-char {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.mission-reveal .reveal-char.is-shown {
-  opacity: 1;
-}
-
-/* 金色の縦棒: ピン演出中は初期非表示、スクロールで出現 */
-.mission-reveal.reveal-active .mission-vision {
-  border-left-color: transparent;
-  transition: border-color 0.8s ease;
-}
-
-.mission-reveal.reveal-active.bar-shown .mission-vision {
-  border-left-color: rgba(184, 134, 11, 0.6);
-}
-
-/* スマホ等・動きを減らす設定では固定演出をオフにして全文表示 */
 @media (max-width: 900px) {
   .mission {
     background-attachment: scroll;
-  }
-  .mission-pin-wrap {
-    height: auto;
-  }
-  .mission-sticky {
-    position: static;
-    min-height: 0;
-    display: block;
-  }
-  .mission-reveal .reveal-char {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mission-pin-wrap {
-    height: auto;
-  }
-  .mission-sticky {
-    position: static;
-    min-height: 0;
-    display: block;
-  }
-  .mission-reveal .reveal-char {
-    opacity: 1;
-    transition: none;
   }
 }
 
@@ -1799,6 +1751,15 @@ a.story-block:hover .story-title {
   margin-bottom: 1.5rem;
 }
 
+.products-subtitle {
+  text-align: left;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  color: #8a7a6a;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+
 .section-layout-left .concept-heading {
   text-align: left;
   font-size: 1.5rem;
@@ -1870,9 +1831,15 @@ a.story-block:hover .story-title {
   gap: 12px;
 }
 
+/* 研究・開発: コンテナ幅は他セクションと同じ1100pxのまま、
+   左右カラムの間隔を詰めて図解の表示幅をできるだけ確保する */
+.story .section-layout {
+  gap: 48px;
+}
+
 /* 研究・開発: 右カラム内のストーリーブロック間隔 */
 .story .section-layout-right .story-block {
-  gap: 40px;
+  gap: 32px;
 }
 
 /* ============================================
@@ -1889,8 +1856,18 @@ a.story-block:hover .story-title {
     gap: 40px;
   }
 
+  /* 中身の長い1行がグリッド列を画面幅以上に広げないようにする */
+  .section-layout > * {
+    min-width: 0;
+  }
+
   .section-layout-left {
     position: static;
+  }
+
+  .connected-world .section-layout-left {
+    position: static;
+    top: auto;
   }
 
   .section-layout-left .section-label {
@@ -1927,6 +1904,17 @@ a.story-block:hover .story-title {
 
   .mission .section-layout-right {
     writing-mode: horizontal-tb;
+  }
+
+  /* 縦書き前提のkeep-allを解除し、日本語を自然に折り返す */
+  .mission .concept-body {
+    word-break: normal;
+  }
+
+  /* 縦書き用の段落間余白（右マージン）を横書き用に戻す */
+  .mission .concept-body p + p {
+    margin-right: 0;
+    margin-top: 2rem;
   }
 
   .mission .section-layout-right .concept-body,
@@ -2000,6 +1988,11 @@ a.story-block:hover .story-title {
     gap: 24px;
     max-width: 400px;
     margin: 0 auto;
+  }
+
+  /* 商品写真は横長(約3:2)のため、縦長枠での左右見切れを防ぐ */
+  .product-card-image {
+    aspect-ratio: 3 / 2;
   }
 
   /* ストーリー */
@@ -2134,8 +2127,8 @@ a.story-block:hover .story-title {
     padding: 12px 40px;
   }
 
-  /* ショップ */
-  .shop-card-list {
+  /* ショップ（基本設定より詳細度を上げて2列指定を確実に効かせる） */
+  .shop .section-layout-right .shop-card-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
