@@ -1847,10 +1847,11 @@ a.story-block:hover .story-title {
   top: 80px;
 }
 
-/* 見出しの幅を実際の文字幅に合わせ、中央揃えの「から」が
-   左揃えの他の行とずれないようにする */
+/* 見出しを文字幅ぴったりの箱にし、3行（GETA LABO／から／つながる世界）を
+   箱の中で互いに中央揃えする。スマホでは箱ごと中央に寄せる（メディアクエリ側） */
 .connected-world .section-heading {
   width: fit-content;
+  text-align: center;
 }
 
 /* Connected World: 右カラムで2列 */
@@ -1938,6 +1939,12 @@ a.story-block:hover .story-title {
 
   .connected-world .section-layout-right .world-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* 文字幅ぴったりの見出しの箱を、1カラムでは箱ごと中央に置く */
+  .connected-world .section-heading {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .contact-section .section-layout-right .contact-cards {
