@@ -54,11 +54,45 @@ ul {
   padding: 0 40px;
 }
 
+/* キーボード操作時だけ現れる「本文へスキップ」リンク */
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 2000;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 10px 16px;
+  border-radius: 4px;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* 下線付きの小さなテキストリンク（製品一覧へ 等） */
+.text-link {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  font-family: "Noto Serif JP", serif;
+  border-bottom: 1px solid #1a1a1a;
+  padding-bottom: 2px;
+  color: #1a1a1a;
+}
+
 /* ---------- フェードインアニメーション ---------- */
 .fade-in {
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* JSが動く環境（html.js）でだけ初期状態を透明にする。JS無効でも内容は見える */
+.js .fade-in {
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .fade-in.is-visible {
@@ -68,11 +102,14 @@ ul {
 
 /* ---------- 商品カード 上品な浮上フェード（時間差つき） ---------- */
 .product-reveal {
-  opacity: 0;
-  transform: translateY(40px);
   transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
+}
+
+.js .product-reveal {
+  opacity: 0;
+  transform: translateY(40px);
 }
 
 .product-reveal.is-visible {
@@ -91,10 +128,17 @@ ul {
   transition-delay: 0.24s;
 }
 
+/* 「動きを減らす」設定の人には、出現アニメーションを止めて常時表示する */
 @media (prefers-reduced-motion: reduce) {
-  .product-reveal {
-    transition-duration: 0.001s;
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js .fade-in,
+  .js .product-reveal {
+    opacity: 1;
     transform: none;
+    transition: none;
   }
 }
 
@@ -446,7 +490,7 @@ ul {
 .nav-side-label {
   font-size: 0.65rem;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.55);
   text-transform: uppercase;
   margin-bottom: 1rem;
 }
@@ -459,7 +503,7 @@ ul {
 
 .nav-side-links a {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   letter-spacing: 0.05em;
   transition: color 0.3s ease;
 }
@@ -471,13 +515,13 @@ ul {
 
 .nav-side-company {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.65);
   margin-bottom: 0.3rem;
 }
 
 .nav-side-address {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.55);
   line-height: 1.6;
 }
 
@@ -529,35 +573,6 @@ ul {
   z-index: 2;
   text-align: center;
   color: #fff;
-}
-
-.hero-catch-en {
-  font-family: "Noto Serif JP", serif;
-  font-size: 0.85rem;
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  margin-bottom: 1.2rem;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: heroFadeIn 1s ease 0.5s forwards;
-}
-
-.hero-catch {
-  font-family: "Noto Serif JP", serif;
-  font-size: 3rem;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  line-height: 1.6;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: heroFadeIn 1s ease 0.8s forwards;
-}
-
-@keyframes heroFadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 
@@ -801,7 +816,7 @@ ul {
 
 .product-card-title-ja {
   font-size: 0.75rem;
-  color: #999;
+  color: #767676;
   margin-bottom: 0.8rem;
 }
 
@@ -923,134 +938,6 @@ a.story-block:hover .story-title {
   margin-top: 1rem;
 }
 
-/* ---------- メソッド・ピラミッド図（3つの柱） ---------- */
-.story-image-method {
-  aspect-ratio: auto;
-  border-radius: 0;
-  overflow: visible;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.method-pyramid {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.method-row {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  width: 100%;
-}
-
-.method-row-top {
-  max-width: 62%;
-}
-
-.method-card {
-  flex: 1;
-  background: #fff;
-  border: 1px solid rgba(26, 26, 26, 0.1);
-  border-radius: 4px;
-  padding: 1.1rem 0.8rem 1.2rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.3rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.method-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-}
-
-.method-card-lead {
-  border-top: 2px solid #B8860B;
-}
-
-.method-card-en {
-  font-family: "Noto Serif JP", serif;
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: #1a1a1a;
-}
-
-.method-card-ja {
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  color: #8a7a6a;
-}
-
-.method-card-keys {
-  margin-top: 0.4rem;
-  font-size: 0.74rem;
-  letter-spacing: 0.04em;
-  color: #555;
-  line-height: 1.7;
-  text-wrap: balance;
-}
-
-.method-card-keys i {
-  font-style: normal;
-  color: #B8860B;
-  margin: 0 0.35em;
-  font-size: 0.7em;
-  vertical-align: 0.1em;
-}
-
-.method-branch {
-  width: 1px;
-  height: 26px;
-  background: linear-gradient(to bottom, rgba(184, 134, 11, 0.7), rgba(184, 134, 11, 0.15));
-}
-
-/* ============================================
-   コラボレーションセクション
-   ============================================ */
-.collaboration {
-  background-color: #fff;
-}
-
-.collaboration .container {
-  text-align: center;
-}
-
-.collab-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 30px;
-  row-gap: 50px;
-  justify-items: center;
-}
-
-.collab-item {
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.collab-item:hover {
-  transform: translateY(-4px);
-}
-
-.collab-item .placeholder-image {
-  aspect-ratio: 3 / 2;
-  border-radius: 4px;
-  margin-bottom: 1.2rem;
-}
-
-.collab-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-}
 
 /* ============================================
    ニュースセクション
@@ -1107,7 +994,7 @@ a.story-block:hover .story-title {
 
 .news-date {
   font-size: 0.8rem;
-  color: #999;
+  color: #6f6f6f;
   letter-spacing: 0.05em;
   white-space: nowrap;
 }
@@ -1249,7 +1136,7 @@ a.story-block:hover .story-title {
 
 .footer-partners-heading {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.1em;
   margin-bottom: 0.8rem;
   flex-shrink: 0;
@@ -1301,7 +1188,7 @@ a.story-block:hover .story-title {
 
 .footer-address {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.6);
   line-height: 1.8;
 }
 
@@ -1338,7 +1225,7 @@ a.story-block:hover .story-title {
 
 .footer-links-heading {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.1em;
   margin-bottom: 0.2rem;
 }
@@ -1358,7 +1245,7 @@ a.story-block:hover .story-title {
 
 .footer-policy a {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.65);
   letter-spacing: 0.05em;
   transition: color 0.3s ease;
   white-space: nowrap; /* リンク名が途中で改行されないようにする */
@@ -1384,7 +1271,7 @@ a.story-block:hover .story-title {
 
 .footer-bottom p {
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.55);
   letter-spacing: 0.05em;
 }
 
@@ -1554,20 +1441,6 @@ a.story-block:hover .story-title {
   text-wrap: pretty;
 }
 
-/* ============================================
-   コラボレーション リード文
-   ============================================ */
-.collab-lead {
-  text-align: center;
-  font-size: 0.9rem;
-  color: #555;
-  line-height: 2.2;
-  margin-bottom: 3rem;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  text-wrap: pretty;
-}
 
 /* ============================================
    認定制度セクション
@@ -1709,47 +1582,10 @@ a.story-block:hover .story-title {
 .footer-partner {
   display: block;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   margin-bottom: 0.4rem;
 }
 
-/* ============================================
-   プレースホルダー画像（仮画像）
-   ============================================ */
-.placeholder-image {
-  width: 100%;
-  height: 100%;
-  min-height: 200px;
-}
-
-.placeholder-1 {
-  background: linear-gradient(145deg, #d4c5b0, #a89279, #8b7355);
-}
-
-.placeholder-2 {
-  background: linear-gradient(145deg, #2c3e50, #34495e, #1a252f);
-}
-
-.placeholder-3 {
-  background: linear-gradient(145deg, #c0392b, #96281b, #7b241c);
-  opacity: 0.85;
-}
-
-.placeholder-story-1 {
-  background: linear-gradient(135deg, #8b7355, #a89279, #c4b393);
-}
-
-.placeholder-story-2 {
-  background: linear-gradient(135deg, #2c3e50, #3d5a73, #4a7c9b);
-}
-
-.placeholder-story-3 {
-  background: linear-gradient(135deg, #5d4037, #795548, #a1887f);
-}
-
-.placeholder-collab {
-  background: linear-gradient(135deg, #e8e0d5, #d5c9b8, #c4b8a5);
-}
 
 /* ============================================
    2カラム セクションレイアウト
@@ -1759,9 +1595,6 @@ a.story-block:hover .story-title {
   grid-template-columns: 260px 1fr;
   gap: 80px;
   align-items: start;
-}
-
-.section-layout-left {
 }
 
 .section-layout-left .section-label {
@@ -2000,24 +1833,7 @@ a.story-block:hover .story-title {
     padding: 16px 24px;
   }
 
-  .logo-main {
-    font-size: 1.2rem;
-  }
-
-  /* ヒーロー */
-  .hero-catch {
-    font-size: 2rem;
-  }
-
-  .hero-catch-en {
-    font-size: 0.75rem;
-  }
-
   /* Feet First（足育文化） */
-  .feet-first-heading {
-    font-size: 1.7rem;
-  }
-
   .feet-first-lead {
     font-size: 0.9rem;
     margin-bottom: 2.5rem;
@@ -2069,33 +1885,6 @@ a.story-block:hover .story-title {
     font-size: 1.2rem;
   }
 
-  /* メソッド・ピラミッド図（スマホ） */
-  .method-row-top {
-    max-width: 80%;
-  }
-
-  .method-row {
-    gap: 12px;
-  }
-
-  .method-card {
-    padding: 1rem 0.6rem 1.1rem;
-  }
-
-  .method-card-keys {
-    font-size: 0.7rem;
-  }
-
-  /* コラボ */
-  .collab-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .collab-lead br {
-    display: none;
-  }
-
   /* つながる世界 */
   .world-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2120,6 +1909,11 @@ a.story-block:hover .story-title {
   /* ミッション */
   .mission .concept-body br {
     display: none;
+  }
+
+  .mission .concept-body {
+    font-size: 0.85rem;
+    line-height: 2;
   }
 
   .mission-vision {
@@ -2212,10 +2006,6 @@ a.story-block:hover .story-title {
     padding: 60px 0;
   }
 
-  .hero-catch {
-    font-size: 1.6rem;
-  }
-
   .concept-heading {
     font-size: 1.5rem;
   }
@@ -2240,11 +2030,6 @@ a.story-block:hover .story-title {
   .nav-link {
     padding: 0.8rem 0;
     gap: 1rem;
-  }
-
-  .collab-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
   }
 
   .world-grid {
@@ -2280,7 +2065,7 @@ a.story-block:hover .story-title {
 }
 
 .fixed-banner:hover,
-.fixed-banner:focus-visible {
+.fixed-banner:focus-within {
   transform: translateY(-4px) scale(1.03);
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.3));
 }
@@ -2289,6 +2074,31 @@ a.story-block:hover .story-title {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.fixed-banner-link {
+  display: block;
+}
+
+/* バナーを消すための×ボタン（消した状態はページを開いている間だけ記憶） */
+.fixed-banner-close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background-color: #1a1a1a;
+  color: #fff;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.fixed-banner.is-hidden {
+  display: none;
 }
 
 @media (max-width: 768px) {

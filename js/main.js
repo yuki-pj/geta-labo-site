@@ -4,21 +4,34 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* ---------- ヘッダーのスクロール変化 ---------- */
-  var header = document.getElementById("header");
+  /* ---------- 「動きを減らす」設定（OSのアクセシビリティ設定）の確認 ---------- */
+  var prefersReducedMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function updateHeader() {
-    var concept = document.getElementById("concept");
-    var pastConcept = concept ? concept.getBoundingClientRect().bottom <= 0 : window.scrollY > 60;
-    if (pastConcept) {
-      header.classList.add("is-scrolled");
-    } else {
-      header.classList.remove("is-scrolled");
-    }
+  /* 動きを減らす設定の人にはトップ動画を自動再生しない（静止画のまま） */
+  var heroVideo = document.querySelector(".hero-video");
+  if (prefersReducedMotion && heroVideo) {
+    heroVideo.removeAttribute("autoplay");
+    heroVideo.pause();
   }
 
-  window.addEventListener("scroll", updateHeader);
-  updateHeader();
+  /* ---------- ヘッダーのスクロール変化 ----------
+     スクロールのたびに位置を計算せず、コンセプト文が画面から出入りする
+     瞬間だけを監視する（負荷の軽い方式） */
+  var header = document.getElementById("header");
+  var concept = document.getElementById("concept");
+
+  if (concept && window.IntersectionObserver) {
+    new IntersectionObserver(function (entries) {
+      var entry = entries[0];
+      var pastConcept = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
+      header.classList.toggle("is-scrolled", pastConcept);
+    }).observe(concept);
+  } else {
+    window.addEventListener("scroll", function () {
+      header.classList.toggle("is-scrolled", window.scrollY > 60);
+    });
+  }
 
   /* ---------- ハンバーガーメニュー ---------- */
   var hamburger = document.getElementById("hamburger");
@@ -32,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var isOpen = navOverlay.classList.contains("is-open");
     hamburgerLabel.textContent = isOpen ? "CLOSE" : "MENU";
+    hamburger.setAttribute("aria-expanded", String(isOpen));
     document.body.style.overflow = isOpen ? "hidden" : "";
   }
 
@@ -39,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
     hamburger.classList.remove("is-active");
     navOverlay.classList.remove("is-open");
     hamburgerLabel.textContent = "MENU";
+    hamburger.setAttribute("aria-expanded", "false");
     document.body.style.overflow = "";
   }
 
@@ -104,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!empty) {
         empty = document.createElement("p");
         empty.className = "news-empty";
-        empty.style.cssText = "padding: 24px 0; color: #888; font-size: 0.9rem;";
+        empty.style.cssText = "padding: 24px 0; color: #6f6f6f; font-size: 0.9rem;";
         empty.textContent = "該当するお知らせはまだありません。";
         newsListEl.appendChild(empty);
       }
@@ -176,6 +191,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadLatestNews() {
     if (!newsListEl || !window.fetch || !window.DOMParser) return;
+    // ローカルでファイルを直接開いている時は取得しない（公開サーバー上でのみ動く機能）
+    if (window.location.protocol === "file:") return;
 
     fetch(NEWS_SOURCE).then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
@@ -202,6 +219,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loadLatestNews();
 
+  /* ---------- 固定バナーの×ボタン ---------- */
+  var fixedBanner = document.getElementById("fixedBanner");
+  var fixedBannerClose = document.getElementById("fixedBannerClose");
+
+  if (fixedBanner && fixedBannerClose) {
+    // 一度閉じたら、このタブを開いている間は表示しない
+    try {
+      if (sessionStorage.getItem("getalabo-banner-closed")) {
+        fixedBanner.classList.add("is-hidden");
+      }
+    } catch (e) {}
+
+    fixedBannerClose.addEventListener("click", function () {
+      fixedBanner.classList.add("is-hidden");
+      try { sessionStorage.setItem("getalabo-banner-closed", "1"); } catch (e) {}
+    });
+  }
+
   /* ---------- スムーススクロール ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener("click", function (e) {
@@ -216,7 +251,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.scrollTo({
           top: targetPosition,
-          behavior: "smooth"
+          behavior: prefersReducedMotion ? "auto" : "smooth"
         });
       }
     });

@@ -26,7 +26,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
     # コンテンツセキュリティポリシー（CSP）
     # 許可: 自サイト / Google Fonts のスタイル・フォントのみ
-    Header always set Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data:; media-src 'self'; connect-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    Header always set Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; img-src 'self' data: https://balancetec.co.jp; media-src 'self'; connect-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
 </IfModule>
 
 # --- 機密ファイルへのアクセス遮断 ---
