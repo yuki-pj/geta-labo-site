@@ -19,6 +19,9 @@ tasks/
 .playwright-mcp/
 movie/
 
+# 別プロジェクト（下駄診断アプリ。HPとは別物なので公開しない）
+getaproject/
+
 # 作業用バックアップ・スクリーンショット（公開しない）
 *.bak
 *.bak-*
