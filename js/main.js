@@ -9,10 +9,12 @@ document.addEventListener("DOMContentLoaded", function () {
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* 動きを減らす設定の人にはトップ動画を自動再生しない（静止画のまま） */
-  var heroVideo = document.querySelector(".hero-video");
-  if (prefersReducedMotion && heroVideo) {
-    heroVideo.removeAttribute("autoplay");
-    heroVideo.pause();
+  var heroVideos = document.querySelectorAll(".hero-video");
+  if (prefersReducedMotion && heroVideos.length) {
+    Array.prototype.forEach.call(heroVideos, function (video) {
+      video.removeAttribute("autoplay");
+      video.pause();
+    });
   }
 
   /* ---------- ヘッダーのスクロール変化 ----------

@@ -111,10 +111,33 @@
   <!-- ========== ヒーローセクション ========== -->
   <section class="hero" id="hero">
     <div class="hero-video-wrap">
-      <video class="hero-video" autoplay muted loop playsinline poster="images/hero003_poster.jpg">
-        <source src="images/hero003_web.mp4" type="video/mp4">
-      </video>
+      <!-- PC用（横型）／スマホ用（縦型）の2本を用意し、画面幅に合う方だけを読み込む。
+           読み込みは下の小さなスクリプトが data-src を src に移し替えて行うため、
+           表示されない方の動画は通信されない。 -->
+      <video class="hero-video hero-video--pc" autoplay muted loop playsinline
+             poster="images/hero003_poster.jpg"
+             data-src="images/hero003_web.mp4"></video>
+      <video class="hero-video hero-video--sp" autoplay muted loop playsinline
+             poster="images/hero003_vertical_web_poster.jpg"
+             data-src="images/hero003_vertical_web.mp4"></video>
+      <noscript>
+        <video class="hero-video hero-video--pc" autoplay muted loop playsinline
+               poster="images/hero003_poster.jpg" src="images/hero003_web.mp4"></video>
+      </noscript>
     </div>
+    <script>
+      /* 画面幅900px以下ならスマホ用（縦）、それより広ければPC用（横）を読み込む。
+         ページの途中に置くことで、動画の読み込みを早い段階で始められる。 */
+      (function () {
+        /* OSで「動きを減らす」設定の人には動画を読み込まない（静止画のまま） */
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+        var isMobile = window.matchMedia("(max-width: 900px)").matches;
+        var target = document.querySelector(isMobile ? ".hero-video--sp" : ".hero-video--pc");
+        if (target && target.dataset.src) {
+          target.src = target.dataset.src;
+        }
+      })();
+    </script>
     <div class="hero-overlay"></div>
     <div class="hero-content">
     </div>
