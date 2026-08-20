@@ -1823,10 +1823,14 @@ a.story-block:hover .story-title {
     margin-top: 1.8rem;
   }
 
-  /* 1カラムに積むスマホでは、見出しを中央に置く。
-     PCは写真の下で左に置く（2列組みの左側なので左揃えのまま） */
+  /* 1カラムに積むスマホでは、見出しと本文をまとめて中央に置く。
+     PCは写真の下の2列組みなので、どちらも左揃えのまま */
   .feet-first-heading {
     font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .feet-first-lead {
     text-align: center;
   }
 
