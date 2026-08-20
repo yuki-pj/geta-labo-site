@@ -23,10 +23,8 @@
   --ls-head: 0.1em;    /* 見出し */
   --ls-label: 0.2em;   /* 小さな英字ラベル・タグ・ボタン */
 
-  /* 見出しの書体。日本語は教科書体系の Klee One、欧文はこれまでどおりの
-     セリフ体（Head Latin）。本文は Noto Sans JP のまま。
-     ここ1行を書き換えれば、全ての見出しの書体が一度に変わる。 */
-  --font-head: "Head Latin", "Klee One", "Noto Serif JP", serif;
+  /* 見出しの書体。ここ1行を書き換えれば、全ての見出しの書体が一度に変わる。 */
+  --font-head: "Noto Serif JP", serif;
 }
 
 html {
@@ -746,7 +744,7 @@ ul {
   text-align: center;
   font-family: var(--font-head);
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: var(--ls-head);
   color: #3a3228;
   margin-bottom: 0.5rem;
@@ -996,7 +994,7 @@ a.story-block:hover .story-title {
 .story-title {
   font-family: var(--font-head);
   font-size: 1.45rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #B8860B;
   margin-bottom: 1.1rem;
   letter-spacing: var(--ls-body);
@@ -1518,7 +1516,7 @@ a.story-block:hover .story-title {
 .world-card-title {
   font-family: var(--font-head);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: var(--ls-head);
   margin-bottom: 0.8rem;
   padding: 0 1.2rem;
@@ -1606,7 +1604,7 @@ a.story-block:hover .story-title {
 .contact-card-title {
   font-family: var(--font-head);
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: var(--ls-body);
   margin-bottom: 0.35rem;
   color: #2c2c2c;
