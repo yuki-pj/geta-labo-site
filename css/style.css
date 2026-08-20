@@ -1823,8 +1823,11 @@ a.story-block:hover .story-title {
     margin-top: 1.8rem;
   }
 
+  /* 1カラムに積むスマホでは、見出しを中央に置く。
+     PCは写真の下で左に置く（2列組みの左側なので左揃えのまま） */
   .feet-first-heading {
     font-size: 1.6rem;
+    text-align: center;
   }
 
   /* 中身の長い1行がグリッド列を画面幅以上に広げないようにする */
